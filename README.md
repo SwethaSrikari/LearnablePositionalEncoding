@@ -1,5 +1,10 @@
 # Exploring different Positional Encoding methods
 
+### NOTE
+This repository focuses only on exploring various positional encoding methods (used to embed sequential order information). The original code has been adopted from this Pytorch Language Modeling [tutorial](https://pytorch.org/tutorials/beginner/transformer_tutorial.html). This tutorial code has been used as the base code for experimenting with different positional encoding methods.
+
+The positional encoding code blocks have been edited and implemented by me.
+
 ### 1. The sinusoidal positional encoding used in the Transformer Model from the paper [Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
 
 ![spe](/images/spe_formula.png)
@@ -65,7 +70,7 @@ class TransformerSPE(nn.Module):
     return output
 ```
 
-### The Learnable Sinusoidal Positional Encoding (LSPE) from the paper [A Simple yet Effective Learnable Positional Encoding Method for Improving Document Transformer Model](https://aclanthology.org/2022.findings-aacl.42.pdf)
+### 2. The Learnable Sinusoidal Positional Encoding (LSPE) from the paper [A Simple yet Effective Learnable Positional Encoding Method for Improving Document Transformer Model](https://aclanthology.org/2022.findings-aacl.42.pdf)
 
 ![lspe](/images/lspe_formula.png)
 

@@ -7,7 +7,8 @@ The positional encoding code blocks have been edited and implemented by me.
 
 ### 1. The sinusoidal positional encoding used in the Transformer Model from the paper [Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
 
-![spe](/images/spe_formula.png)
+<img src="/images/spe_formula.png" alt="Image Description" width="700" height="200">
+<!-- ![spe](/images/spe_formula.png) -->
 
 ```python
 class SinusoidalPositionalEncoding(nn.Module):
@@ -72,7 +73,8 @@ class TransformerSPE(nn.Module):
 
 ### 2. The Learnable Sinusoidal Positional Encoding (LSPE) from the paper [A Simple yet Effective Learnable Positional Encoding Method for Improving Document Transformer Model](https://aclanthology.org/2022.findings-aacl.42.pdf)
 
-![lspe](/images/lspe_formula.png)
+<img src="/images/lspe_formula.png" alt="Image Description" width="500" height="300">
+<!-- ![lspe](/images/lspe_formula.png) -->
 
 ```python
 class LearnableSPE(nn.Module):

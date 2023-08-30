@@ -4,10 +4,10 @@ from torch import nn, Tensor
 
 class LearnableSPE(nn.Module):
 
-	def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 512):
+	def __init__(self, d_model: int, d_hid: int, dropout: float = 0.1, max_len: int = 512):
 		super().__init__()
 		self.dropout = nn.Dropout(p=dropout)
-
+		self.ffn = PositionwiseFeedForward(d_model, d_hid)
 		position = torch.arange(max_len).unsqueeze(1)
 		div_term = torch.exp(torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model))
 		pe = torch.zeros(max_len, 1, d_model)
@@ -20,7 +20,8 @@ class LearnableSPE(nn.Module):
 		Arguments:
 		    x: Tensor, shape ``[seq_len, batch_size, embedding_dim]``
 		"""
-		x = x + self.pe[:x.size(0)]
+		self.pe_out = self.ffn(self.pe)
+		x = x + self.pe_out[:x.size(0)]
 		return self.dropout(x)
 
 class PositionwiseFeedForward(nn.Module):

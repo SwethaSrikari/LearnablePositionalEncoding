@@ -11,8 +11,10 @@ from torch import nn, Tensor
 from torch.nn import TransformerEncoder, TransformerEncoderLayer
 from torch.utils.data import dataset
 
-from models.transformer.transformer_lspe import TransformerLSPE
-from models.transformer.transformer_spe import TransformerSPE
+from models.positional_encoding.LSPE import LearnableSPE
+from models.positional_encoding.SPE import SinusoidalPositionalEncoding
+from models.transformer import Transformer
+
 from data import get_vocab, get_data
 from utils.get_batch import get_batch
 
@@ -82,14 +84,16 @@ def evaluate(model: nn.Module, eval_data: Tensor) -> float:
     return total_loss / (len(eval_data) - 1)
 
 
-def run(epochs=3, model='Transformer_SPE'):
-	if model == 'Transformer_SPE':
-		model = TransformerSPE(ntokens, emsize, nhead, d_hid, nlayers, dropout).to(device)
-	elif model == 'Transformer_LSPE':
-		model = TransformerLSPE(ntokens, emsize, nhead, d_hid, nlayers, dropout).to(device)
+def run(epochs=3, encoding='SPE'):
+	if encoding == 'SPE':
+		pos_encoder = SinusoidalPositionalEncoding(emsize, dropout)
+	elif encoding == 'LSPE':
+		pos_encoder = LearnableSPE(emsize, d_hid, dropout)
 	else:
 		print('No such model')
 		exit()
+
+	model = Transformer(pos_encoder, ntokens, emsize, nhead, d_hid, nlayers, dropout).to(device)
 
 	# Training hyperparameters
 	optimizer = torch.optim.SGD(model.parameters(), lr=lr)
@@ -118,8 +122,8 @@ def run(epochs=3, model='Transformer_SPE'):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--epochs', type=int, default=3, help='Number of epochs to train')
-	parser.add_argument('--model', type=str, default='Transformer_SPE',
+	parser.add_argument('--encoding', type=str, default='SPE',
 						help='Type of positional enccoding to use')
 	args = parser.parse_args()
 
-	run(args.epochs, args.model)
+	run(args.epochs, args.encoding)

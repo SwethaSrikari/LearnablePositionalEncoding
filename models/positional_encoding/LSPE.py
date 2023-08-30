@@ -4,7 +4,7 @@ from torch import nn, Tensor
 
 class LearnableSPE(nn.Module):
 
-	def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 512):
+	def __init__(self, d_model: int, d_hid: int, dropout: float = 0.1, max_len: int = 512):
 		super().__init__()
 		self.dropout = nn.Dropout(p=dropout)
 		self.ffn = PositionwiseFeedForward(d_model, d_hid)

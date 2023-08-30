@@ -11,7 +11,7 @@ class TransformerLSPE(nn.Module):
 				 nlayers: int, dropout: float = 0.5):
 		super().__init__()
 		self.model_type = 'Transformer_LSPE'
-		self.pos_encoder = LearnableSPE(d_model, dropout)
+		self.pos_encoder = LearnableSPE(d_model, d_hid, dropout)
 		encoder_layers = TransformerEncoderLayer(d_model, nhead, d_hid, dropout)
 		self.transformer_encoder = TransformerEncoder(encoder_layers, nlayers)
 		self.embedding = nn.Embedding(ntoken, d_model)

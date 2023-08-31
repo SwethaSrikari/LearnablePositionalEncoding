@@ -101,6 +101,9 @@ python train.py --epochs 10 --encoding 'LSPE'
 ```
 
 ### References
-Learnable Sinusoidal Positional Embeddings paper - [A Simple yet Effective Learnable Positional Encoding Method for Improving Document Transformer Model](https://aclanthology.org/2022.findings-aacl.42.pdf)
+
+Fixed Sinusoidal Positional Embeddings - [Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
+
+Learnable Sinusoidal Positional Embeddings - [A Simple yet Effective Learnable Positional Encoding Method for Improving Document Transformer Model](https://aclanthology.org/2022.findings-aacl.42.pdf)
 
 Base Transformer code - Pytorch Language Modeling [tutorial](https://pytorch.org/tutorials/beginner/transformer_tutorial.html)

@@ -88,7 +88,7 @@ The heatmap below is the result of training the positional encoding for just a f
 
 **Similarity of 1D Learnable Sinusoidal position embedding**
 
-Unlike the fixed positional embeddings, these sinusoidal positional embeddings are learned during training. Since the model hasn't been trained for so long, there isn't any clear pattern visible in the heatmap but the plot shows that by learning the positional embeddings, the embeddings are trying to capture relationships between positions (words) far away from itself.
+Unlike the fixed positional embeddings, these sinusoidal positional embeddings are learned during training. With just a few epochs of training on a small dataset, the embeddings are trying to capture relationships between positions (words) far away from itself.
 
 <img src="/images/lspe_sim.png" alt="Image Description" width="500" height="500">
 

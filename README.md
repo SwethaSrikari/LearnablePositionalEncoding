@@ -91,3 +91,16 @@ The heatmap below is the result of training the positional encoding for just a f
 The given heatmap illustrates how similar each positional embedding is to itself and other positions using cosine similarity. The model employs a positional encoding of size(512, 200), accommodating sequences of up to 512 words. The embedding dimension used for each position is 200. This means that each position in the sequence is represented by a vector of length 200. Unlike the fixed positional embeddings, these sinusoidal positional embeddings are learned during training. Since the model hasn't been trained for so long, there isn't any clear pattern visible in the heatmap but the plot shows that by learning the positional embeddings, the embeddings are trying to capture relationships between positions (words) far away from itself.
 
 <img src="/images/lspe_sim.png" alt="Image Description" width="500" height="500">
+
+**Run on Google Colab** - [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]([https://colab.research.google.com/github/weiji14/deepbedmap/](https://colab.research.google.com/github/SwethaSrikari/ExploringPositionalEncoding/blob/main/Exploring_positional_encoding.ipynb)https://colab.research.google.com/github/SwethaSrikari/ExploringPositionalEncoding/blob/main/Exploring_positional_encoding.ipynb)
+
+**Run on terminal**
+
+```
+python train.py --epochs 10 --encoding 'LSPE'
+```
+
+### References
+Learnable Sinusoidal Positional Embeddings paper - [A Simple yet Effective Learnable Positional Encoding Method for Improving Document Transformer Model](https://aclanthology.org/2022.findings-aacl.42.pdf)
+
+Base Transformer code - Pytorch Language Modeling [tutorial](https://pytorch.org/tutorials/beginner/transformer_tutorial.html)

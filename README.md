@@ -88,7 +88,7 @@ The heatmap below is the result of training the positional encoding for just a f
 
 **Similarity of 1D Learnable Sinusoidal position embedding**
 
-The given heatmap illustrates how similar each positional embedding is to itself and other positions using cosine similarity. The model employs a positional encoding of size(512, 200), accommodating sequences of up to 512 words. The embedding dimension used for each position is 200. This means that each position in the sequence is represented by a vector of length 200. Unlike the fixed positional embeddings, these sinusoidal positional embeddings are learned during training. Since the model hasn't been trained for so long, there isn't any clear pattern visible in the heatmap but the plot shows that by learning the positional embeddings, the embeddings are trying to capture relationships between positions (words) far away from itself.
+Unlike the fixed positional embeddings, these sinusoidal positional embeddings are learned during training. Since the model hasn't been trained for so long, there isn't any clear pattern visible in the heatmap but the plot shows that by learning the positional embeddings, the embeddings are trying to capture relationships between positions (words) far away from itself.
 
 <img src="/images/lspe_sim.png" alt="Image Description" width="500" height="500">
 

@@ -29,47 +29,15 @@ class SinusoidalPositionalEncoding(nn.Module):
     Arguments:
         x: Tensor, shape ``[seq_len, batch_size, embedding_dim]``
     """
-    x = x + self.pe[:x.size(0)]
+    x = x + self.pe[:x.size(0)] # positional encodings are fixed
     return self.dropout(x)
 ```
 
-```python
-class TransformerSPE(nn.Module):
+**Similarity of 1D Sinusoidal position embedding**
 
-  def __init__(self, ntoken: int, d_model: int, nhead: int, d_hid: int,
-         nlayers: int, dropout: float = 0.5):
-    super().__init__()
-    self.model_type = 'Transformer_SPE' # changes with encoding
-    self.pos_encoder = SinusoidalPositionalEncoding(d_model, dropout) # changes with encoding
-    encoder_layers = TransformerEncoderLayer(d_model, nhead, d_hid, dropout)
-    self.transformer_encoder = TransformerEncoder(encoder_layers, nlayers)
-    self.embedding = nn.Embedding(ntoken, d_model)
-    self.d_model = d_model
-    self.linear = nn.Linear(d_model, ntoken)
-  
-    self.init_weights()
-  
-  def init_weights(self) -> None:
-    initrange = 0.1
-    self.embedding.weight.data.uniform_(-initrange, initrange)
-    self.linear.bias.data.zero_()
-    self.linear.weight.data.uniform_(-initrange, initrange)
-  
-  def forward(self, src: Tensor, src_mask: Tensor = None) -> Tensor:
-    """
-    Arguments:
-        src: Tensor, shape ``[seq_len, batch_size]``
-        src_mask: Tensor, shape ``[seq_len, seq_len]``
-  
-    Returns:
-        output Tensor of shape ``[seq_len, batch_size, ntoken]``
-    """
-    src = self.embedding(src) * math.sqrt(self.d_model)
-    src = self.pos_encoder(src) # changes with encoding
-    output = self.transformer_encoder(src, src_mask)
-    output = self.linear(output)
-    return output
-```
+<img src="/images/spe_sim.png" alt="Image Description" width="500" height="500">
+
+The given heatmap illustrates how similar each positional embedding is to itself and other positions using cosine similarity. The model employs a positional encoding of size(512, 200), accommodating sequences of up to 512 words. The embedding dimension used for each position is 200. This means that each position in the sequence is represented by a vector of length 200. With the fixed sinusoidal positional embeddings, embeddings of the same position are likely to be highly similar thus showing a diagonal line on the heatmap.
 
 ### 2. The Learnable Sinusoidal Positional Encoding (LSPE) from the paper [A Simple yet Effective Learnable Positional Encoding Method for Improving Document Transformer Model](https://aclanthology.org/2022.findings-aacl.42.pdf)
 
@@ -79,10 +47,10 @@ class TransformerSPE(nn.Module):
 ```python
 class LearnableSPE(nn.Module):
 
-  def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 512):
+  def __init__(self, d_model: int, d_hid: int, dropout: float = 0.1, max_len: int = 512):
     super().__init__()
     self.dropout = nn.Dropout(p=dropout)
-  
+    self.ffn = PositionwiseFeedForward(d_model, d_hid)
     position = torch.arange(max_len).unsqueeze(1)
     div_term = torch.exp(torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model))
     pe = torch.zeros(max_len, 1, d_model)
@@ -95,7 +63,8 @@ class LearnableSPE(nn.Module):
     Arguments:
         x: Tensor, shape ``[seq_len, batch_size, embedding_dim]``
     """
-    x = x + self.pe[:x.size(0)]
+    self.pe_out = self.ffn(self.pe) # Add nn so that encoding becomes trainable
+    x = x + self.pe_out[:x.size(0)]
     return self.dropout(x)
 
 class PositionwiseFeedForward(nn.Module):
@@ -114,45 +83,11 @@ class PositionwiseFeedForward(nn.Module):
     x = self.linear2(x)
     return x
 ```
+**NOTE**
+The heatmap below is the result of training the positional encoding for just a few epochs on a very small dataset.
 
-```python
-class TransformerLSPE(nn.Module):
+**Similarity of 1D Learnable Sinusoidal position embedding**
 
-  def __init__(self, ntoken: int, d_model: int, nhead: int, d_hid: int,
-         nlayers: int, dropout: float = 0.5):
-    super().__init__()
-    self.model_type = 'Transformer_LSPE' # changes with encoding
-    self.pos_encoder = LearnableSPE(d_model, dropout) # changes with encoding
-    self.ffn = PositionwiseFeedForward(d_model, d_hid) # changes with encoding
-    encoder_layers = TransformerEncoderLayer(d_model, nhead, d_hid, dropout)
-    self.transformer_encoder = TransformerEncoder(encoder_layers, nlayers)
-    self.embedding = nn.Embedding(ntoken, d_model)
-    self.d_model = d_model
-    self.linear = nn.Linear(d_model, ntoken)
-    self.encodings = None
-  
-    self.init_weights()
-  
-  def init_weights(self) -> None:
-    initrange = 0.1
-    self.embedding.weight.data.uniform_(-initrange, initrange)
-    self.linear.bias.data.zero_()
-    self.linear.weight.data.uniform_(-initrange, initrange)
-  
-  def forward(self, src: Tensor, src_mask: Tensor = None) -> Tensor:
-    """
-    Arguments:
-        src: Tensor, shape ``[seq_len, batch_size]``
-        src_mask: Tensor, shape ``[seq_len, seq_len]``
-  
-    Returns:
-        output Tensor of shape ``[seq_len, batch_size, ntoken]``
-    """
-    src = self.embedding(src) * math.sqrt(self.d_model)
-    src = self.pos_encoder(src) # changes with encoding
-    src = self.ffn(src) # changes with encoding
-    self.encodings = src
-    output = self.transformer_encoder(src, src_mask)
-    output = self.linear(output)
-    return output
-```
+The given heatmap illustrates how similar each positional embedding is to itself and other positions using cosine similarity. The model employs a positional encoding of size(512, 200), accommodating sequences of up to 512 words. The embedding dimension used for each position is 200. This means that each position in the sequence is represented by a vector of length 200. Unlike the fixed positional embeddings, these sinusoidal positional embeddings are learned during training. Since the model hasn't been trained for so long, there isn't any clear pattern visible in the heatmap but the plot shows that by learning the positional embeddings, the embeddings are trying to capture relationships between positions (words) far away from itself.
+
+<img src="/images/lspe_sim.png" alt="Image Description" width="500" height="500">

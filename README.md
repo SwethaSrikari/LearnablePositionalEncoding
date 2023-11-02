@@ -1,7 +1,7 @@
-# Exploring different Positional Encoding methods
+# Learnable Positional Encoding 
 
 ### NOTE
-This repository focuses only on exploring various positional encoding methods (used to embed sequential order information). The original code has been adopted from this Pytorch Language Modeling [tutorial](https://pytorch.org/tutorials/beginner/transformer_tutorial.html). This tutorial code has been used as the base code for experimenting with different positional encoding methods.
+This repository focuses only on implementing learnable positional encoding method (used to embed sequential order information). The original code has been adopted from this Pytorch Language Modeling [tutorial](https://pytorch.org/tutorials/beginner/transformer_tutorial.html). This tutorial code has been used as the base code for experimenting with different positional encoding methods.
 
 The positional encoding code blocks have been edited and implemented by me.
 
